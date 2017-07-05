@@ -17,7 +17,7 @@ with open("testData.tsv") as tsv:
 # for resource in data:
 #    print resource
 
-resource = data[1]
+resource = data[2]
 
 # Root element
 root = Element(QName(ms, "lcrMetadataRecord"), nsmap={'ms': ms, 'xsi': xsi})
@@ -131,13 +131,13 @@ if resource[10] != '':
 
 ##########################
 # distributionInfo
-distributionInfo = SubElement(
-    lexicalConceptualResourceInfo, QName(ms, "distributionInfo"))
+distributionInfos = SubElement(
+    lexicalConceptualResourceInfo, QName(ms, "distributionInfos"))
 
 #########################
 # datasetDistributionInfo [m]
 datasetDistributionInfo1 = SubElement(
-    distributionInfo, QName(ms, "datasetDistributionInfo"))
+    distributionInfos, QName(ms, "datasetDistributionInfo"))
 
 # datasetDistributionInfo - distribution location [m]
 distr1_distributionLocationExternal = SubElement(
@@ -147,14 +147,14 @@ distr1_distributionMedium = SubElement(
     distr1_distributionLocationExternal, QName(ms, "distributionMedium"))
 distr1_distributionMedium.text = resource[11].strip()
 
-if resource[12] != '':
+if resource[12].strip() != '':
     distr1_distributionLocation = SubElement(
         distr1_distributionLocationExternal, QName(ms, "distributionLocation"))
     distr1_distributionLocation.text = resource[12].strip()
 
 
 # datasetDistributionInfo - text formats [o+]
-if resource[13] != '':
+if resource[13].strip() != '':
     distr1_textFormats = SubElement(
         datasetDistributionInfo1, QName(ms, "textFormats"))
     textFormat_list = resource[13].split(";")
@@ -170,11 +170,176 @@ if resource[13] != '':
 # datasetDistributionInfo - licence info [m+]
 distr1_rightsInfo = SubElement(
     datasetDistributionInfo1, QName(ms, "rightsInfo"))
-distr1_licencesInfo = SubElement(distr1_rightsInfo, QName(ms, "licencesInfo"))
+distr1_licenceInfos = SubElement(distr1_rightsInfo, QName(ms, "licenceInfos"))
+
 license_list = resource[14].split(";")
 for license in license_list:
-    distr1_licence = SubElement(distr1_licencesInfo, QName(ms, "licence"))
-    distr1_licence.text = license
+    distr1_licenceInfo = SubElement(
+        distr1_licenceInfos, QName(ms, "licenceInfo"))
+    distr1_licence = SubElement(distr1_licenceInfo, QName(ms, "licence"))
+    distr1_licence.text = license.strip()
+    if distr1_licence.text == "nonStandardLicenceTerms":
+        assert(resource[15].strip() != "")
+        distr1_nonStandardLicenceName = SubElement(
+            distr1_licenceInfo, QName(ms, "nonStandardLicenceName"))
+        distr1_nonStandardLicenceName.text = resource[15].strip()
+        distr1_nonStandardLicenceName.attrib["lang"] = "en"
+        assert (resource[16].strip() != "" or resource[17].strip() != "")
+        if resource[16].strip() != "":
+            distr1_nonStandardLicenceTermsURL = SubElement(
+                distr1_licenceInfo, QName(ms, "nonStandardLicenceTermsURL"))
+            distr1_nonStandardLicenceTermsURL.text = resource[16].strip()
+        if resource[17].strip() != "":
+            distr1_nonStandardLicenceTermsText = SubElement(
+                distr1_licenceInfo, QName(ms, "nonStandardLicenceTermsText"))
+            distr1_nonStandardLicenceTermsText.text = resource[17].strip()
+
+
+#########################
+# datasetDistributionInfo [o]
+datasetDistributionInfo2 = SubElement(
+    distributionInfos, QName(ms, "datasetDistributionInfo"))
+
+# datasetDistributionInfo - distribution location [m]
+distr2_distributionLocationExternal = SubElement(
+    datasetDistributionInfo2, QName(ms, "distributionLoc"))
+
+distr2_distributionMedium = SubElement(
+    distr2_distributionLocationExternal, QName(ms, "distributionMedium"))
+distr2_distributionMedium.text = resource[18].strip()
+
+if resource[19].strip() != '':
+    distr2_distributionLocation = SubElement(
+        distr2_distributionLocationExternal, QName(ms, "distributionLocation"))
+    distr2_distributionLocation.text = resource[19].strip()
+
+
+# datasetDistributionInfo - text formats [o+]
+if resource[20].strip() != '':
+    distr2_textFormats = SubElement(
+        datasetDistributionInfo2, QName(ms, "textFormats"))
+    textFormat_list = resource[20].split(";")
+    for textFormat in textFormat_list:
+        distr2_textFormatInfo = SubElement(
+            distr2_textFormats, QName(ms, "textFormatInfo"))
+        distr2_dataFormatInfo = SubElement(
+            distr2_textFormatInfo, QName(ms, "dataFormatInfo"))
+        distr2_dataFormat = SubElement(
+            distr2_dataFormatInfo, QName(ms, "dataFormat"))
+        distr2_dataFormat.text = textFormat.strip()
+
+# datasetDistributionInfo - licence info [m+]
+distr2_rightsInfo = SubElement(
+    datasetDistributionInfo2, QName(ms, "rightsInfo"))
+distr2_licenceInfos = SubElement(distr2_rightsInfo, QName(ms, "licenceInfos"))
+
+license_list = resource[21].split(";")
+for license in license_list:
+    distr2_licenceInfo = SubElement(
+        distr2_licenceInfos, QName(ms, "licenceInfo"))
+    distr2_licence = SubElement(distr2_licenceInfo, QName(ms, "licence"))
+    distr2_licence.text = license.strip()
+    if distr2_licence.text == "nonStandardLicenceTerms":
+        assert(resource[22].strip() != "")
+        distr2_nonStandardLicenceName = SubElement(
+            distr2_licenceInfo, QName(ms, "nonStandardLicenceName"))
+        distr2_nonStandardLicenceName.text = resource[22].strip()
+        distr2_nonStandardLicenceName.attrib["lang"] = "en"
+        assert (resource[23].strip() != "" or resource[24].strip() != "")
+        if resource[23].strip() != "":
+            distr2_nonStandardLicenceTermsURL = SubElement(
+                distr2_licenceInfo, QName(ms, "nonStandardLicenceTermsURL"))
+            distr2_nonStandardLicenceTermsURL.text = resource[23].strip()
+        if resource[24].strip() != "":
+            distr2_nonStandardLicenceTermsText = SubElement(
+                distr2_licenceInfo, QName(ms, "nonStandardLicenceTermsText"))
+            distr2_nonStandardLicenceTermsText.text = resource[24].strip()
+
+#########################
+# datasetDistributionInfo [o]
+datasetDistributionInfo3 = SubElement(
+    distributionInfos, QName(ms, "datasetDistributionInfo"))
+
+# datasetDistributionInfo - distribution location [m]
+distr3_distributionLocationExternal = SubElement(
+    datasetDistributionInfo3, QName(ms, "distributionLoc"))
+
+distr3_distributionMedium = SubElement(
+    distr3_distributionLocationExternal, QName(ms, "distributionMedium"))
+distr3_distributionMedium.text = resource[25].strip()
+
+if resource[26].strip() != '':
+    distr3_distributionLocation = SubElement(
+        distr3_distributionLocationExternal, QName(ms, "distributionLocation"))
+    distr3_distributionLocation.text = resource[26].strip()
+
+
+# datasetDistributionInfo - text formats [o+]
+if resource[27].strip() != '':
+    distr3_textFormats = SubElement(
+        datasetDistributionInfo3, QName(ms, "textFormats"))
+    textFormat_list = resource[27].split(";")
+    for textFormat in textFormat_list:
+        distr3_textFormatInfo = SubElement(
+            distr3_textFormats, QName(ms, "textFormatInfo"))
+        distr3_dataFormatInfo = SubElement(
+            distr3_textFormatInfo, QName(ms, "dataFormatInfo"))
+        distr3_dataFormat = SubElement(
+            distr3_dataFormatInfo, QName(ms, "dataFormat"))
+        distr3_dataFormat.text = textFormat.strip()
+
+# datasetDistributionInfo - licence info [m+]
+distr3_rightsInfo = SubElement(
+    datasetDistributionInfo3, QName(ms, "rightsInfo"))
+distr3_licenceInfos = SubElement(distr3_rightsInfo, QName(ms, "licenceInfos"))
+
+license_list = resource[28].split(";")
+for license in license_list:
+    distr3_licenceInfo = SubElement(
+        distr3_licenceInfos, QName(ms, "licenceInfo"))
+    distr3_licence = SubElement(distr3_licenceInfo, QName(ms, "licence"))
+    distr3_licence.text = license.strip()
+    if distr3_licence.text == "nonStandardLicenceTerms":
+        assert(resource[29].strip() != "")
+        distr3_nonStandardLicenceName = SubElement(
+            distr3_licenceInfo, QName(ms, "nonStandardLicenceName"))
+        distr3_nonStandardLicenceName.text = resource[29].strip()
+        distr3_nonStandardLicenceName.attrib["lang"] = "en"
+        assert (resource[30].strip() != "" or resource[31].strip() != "")
+        if resource[30].strip() != "":
+            distr3_nonStandardLicenceTermsURL = SubElement(
+                distr3_licenceInfo, QName(ms, "nonStandardLicenceTermsURL"))
+            distr3_nonStandardLicenceTermsURL.text = resource[30].strip()
+        if resource[31].strip() != "":
+            distr3_nonStandardLicenceTermsText = SubElement(
+                distr3_licenceInfo, QName(ms, "nonStandardLicenceTermsText"))
+            distr3_nonStandardLicenceTermsText.text = resource[31].strip()
+
+
+###################################
+# resource documentation info
+if resource[32].strip() != "":
+    assert(resource[33].strip() != "")
+    documentationInfo = SubElement(
+        lexicalConceptualResourceInfo, QName(ms, "resourceDocumentationInfo"))
+    doc_citations = SubElement(
+        documentationInfo, QName(ms, "citations"))
+    doc_mustBeCitedWith = SubElement(
+        doc_citations, QName(ms, "mustBeCitedWith"))
+    doc_publicationIdentifiers = SubElement(
+        doc_mustBeCitedWith, QName(ms, "publicationIdentifiers"))
+    publId = resource[32].split(";")
+    publIdSchema = resource[33].split(";")
+    assert(len(publId) == len(publIdSchema))
+    for i in range(0, len(publId)):
+        doc_publicationId = SubElement(
+            doc_publicationIdentifiers, QName(ms, "publicationIdentifiers"))
+        doc_publicationId.text = publId[i].strip()
+        doc_publicationId.attrib[
+            "publicationIdentifierSchemeName"] = publIdSchema[i].strip()
+
+##################################
+# lexicalConceptualResourceType
 
 # Print xml
 print tostring(root, pretty_print=True)
