@@ -8,13 +8,22 @@ from lxml.etree import Element, SubElement, QName, tostring
 ms = 'http://www.meta-share.org/OMTD-SHARE_XMLSchema'
 xsi = 'http://www.w3.org/2001/XMLSchema-instance'
 
-# Read tsv file
-with open("testData.tsv") as tsv:
+# Read tsv file with creation metadata info
+with open("metadataCreationInfo.csv") as tsv:
     reader = csv.reader(tsv, dialect="excel-tab")
-    data = list(reader)
+    creation_data = list(reader)
     # print data[1]
 
-for resource in data:
+# Read tsv file with rest metadata info
+with open("metadataLCRinfo.tsv") as tsv:
+    reader = csv.reader(tsv, dialect="excel-tab")
+    data = list(reader)
+
+# for resource in data:
+for j in range(0, len(data)):
+    # Set working data
+    resource = data[j]
+    creation_resource = creation_data[2]
     print "Working on resource " + resource[0]
     # Root element
     root = Element(QName(ms, "lcrMetadataRecord"),
@@ -22,6 +31,100 @@ for resource in data:
     root.attrib[QName(xsi, "schemaLocation")
                 ] = "http://www.meta-share.org/OMTD-SHARE_XMLSchema http://www.meta-share.org/OMTD-SHARE_XMLSchema/v200/OMTD-SHARE-LexicalConceptualResource.xsd"
 
+    #########################################
+    # metadataHeaderInfo
+    metadataHeaderInfo = SubElement(
+        root, QName(ms, "metadataHeaderInfo"))
+    mdh_metadataRecordId = SubElement(
+        metadataHeaderInfo, QName(ms, "metadataRecordIdentifier"))
+    mdh_metadataRecordId.text = creation_resource[0].strip()
+    mdh_metadataRecordId.attrib[
+        "metadataIdentifierSchemeName"] = creation_resource[1].strip()
+    mdh_metadataCreationDate = SubElement(
+        metadataHeaderInfo, QName(ms, "metadataCreationDate"))
+    mdh_metadataCreationDate.text = creation_resource[2].strip()
+
+    ###############################
+    # metadataCreators
+    mdh_metadataCreators = SubElement(
+        metadataHeaderInfo, QName(ms, "metadataCreators"))
+    creatorsName = creation_resource[3].split(";")
+    creatorsId = creation_resource[4].split(";")
+    creatorsIdSchema = creation_resource[5].split(";")
+    creatorsSex = creation_resource[6].split(";")
+    creatorsEmail = creation_resource[7].split(";")
+    creatorsPosition = creation_resource[8].split(";")
+    creatorsOrganization = creation_resource[9].split(";")
+    creatorsDepartment = creation_resource[10].split(";")
+    assert(len(creatorsName) == len(creatorsId))
+    assert(len(creatorsName) == len(creatorsIdSchema))
+    assert(len(creatorsName) == len(creatorsSex))
+    assert(len(creatorsName) == len(creatorsEmail))
+    assert(len(creatorsName) == len(creatorsPosition))
+    assert(len(creatorsName) == len(creatorsOrganization))
+    assert(len(creatorsName) == len(creatorsDepartment))
+
+    for i in range(0, len(creatorsName)):
+        mdh_metadataCreator = SubElement(
+            mdh_metadataCreators, QName(ms, "metadataCreator"))
+        # Name
+        mdh_creatorNames = SubElement(
+            mdh_metadataCreator, QName(ms, "names"))
+        mdh_creatorName = SubElement(
+            mdh_creatorNames, QName(ms, "name"))
+        mdh_creatorName.text = creatorsName[i].strip()
+
+        # Id
+        mdh_creatorIdentifiers = SubElement(
+            mdh_metadataCreator, QName(ms, "personIdentifiers"))
+        mdh_creatorId = SubElement(
+            mdh_creatorIdentifiers, QName(ms, "personIdentifier"))
+        mdh_creatorId.text = creatorsId[i].strip()
+        mdh_creatorId.attrib[
+            "personIdentifierSchemeName"] = creatorsIdSchema[i].strip()
+
+        # Sex
+        mdh_creatorSex = SubElement(
+            mdh_metadataCreator, QName(ms, "sex"))
+        mdh_creatorSex.text = creatorsSex[i].strip()
+
+        # communicationInfo
+        mdh_creatorCommunication = SubElement(
+            mdh_metadataCreator, QName(ms, "communicationInfo"))
+        mdh_creatorEmails = SubElement(
+            mdh_creatorCommunication, QName(ms, "emails"))
+        mdh_creatorEmail = SubElement(
+            mdh_creatorEmails, QName(ms, "email"))
+        mdh_creatorEmail.text = creatorsEmail[i].strip()
+
+        # affliation info
+        mdh_creatorAffiliationsInfo = SubElement(
+            mdh_metadataCreator, QName(ms, "affiliations"))
+        mdh_creatorAffiliation = SubElement(
+            mdh_creatorAffiliationsInfo, QName(ms, "affiliation"))
+        mdh_creatorPosition = SubElement(
+            mdh_creatorAffiliation, QName(ms, "position"))
+        mdh_creatorPosition.text = creatorsPosition[i].strip()
+        mdh_creatorOrganization = SubElement(
+            mdh_creatorAffiliation, QName(ms, "affiliatedOrganization"))
+
+        # Organization
+        mdh_creatorOrganizationNames = SubElement(
+            mdh_creatorOrganization, QName(ms, "organizationNames"))
+        mdh_creatorOrganizationName = SubElement(
+            mdh_creatorOrganizationNames, QName(ms, "organizationName"))
+        mdh_creatorOrganizationName.text = creatorsOrganization[i].strip()
+        mdh_creatorOrganizationName.attrib["lang"] = "en"
+
+        # Department
+        mdh_creatorDepartmentNames = SubElement(
+            mdh_creatorOrganization, QName(ms, "departmentNames"))
+        mdh_creatorDepartmentName = SubElement(
+            mdh_creatorDepartmentNames, QName(ms, "departmentName"))
+        mdh_creatorDepartmentName.text = creatorsDepartment[i].strip()
+        mdh_creatorDepartmentName.attrib["lang"] = "en"
+
+    #########################################
     # lexicalConceptualResourceInfo
     lexicalConceptualResourceInfo = SubElement(
         root, QName(ms, "lexicalConceptualResourceInfo"))
@@ -196,7 +299,7 @@ for resource in data:
                 distr1_nonStandardLicenceTermsURL.text = resource[16].strip()
             if resource[17].strip() != "":
                 distr1_nonStandardLicenceTermsText = SubElement(
-                    distr1_licenceInfo, QName(ms, "nonStandardLicenceTermsText"))
+                    distr1_licenceInfo, QName(ms, "nonStandaradLicenceTermsText"))
                 distr1_nonStandardLicenceTermsText.text = resource[17].strip()
 
     #########################
@@ -260,7 +363,7 @@ for resource in data:
                         23].strip()
                 if resource[24].strip() != "":
                     distr2_nonStandardLicenceTermsText = SubElement(
-                        distr2_licenceInfo, QName(ms, "nonStandardLicenceTermsText"))
+                        distr2_licenceInfo, QName(ms, "nonStandaradLicenceTermsText"))
                     distr2_nonStandardLicenceTermsText.text = resource[
                         24].strip()
 
@@ -325,7 +428,7 @@ for resource in data:
                         30].strip()
                 if resource[31].strip() != "":
                     distr3_nonStandardLicenceTermsText = SubElement(
-                        distr3_licenceInfo, QName(ms, "nonStandardLicenceTermsText"))
+                        distr3_licenceInfo, QName(ms, "nonStandaradLicenceTermsText"))
                     distr3_nonStandardLicenceTermsText.text = resource[
                         31].strip()
 
@@ -439,9 +542,9 @@ for resource in data:
             lrc_textSizeInfo, QName(ms, "sizeUnit"))
         lrc_texiSizeSizeUnit.text = sizeUnits[i].strip()
 
-    #################
     # Print xml
     fileXML = open("GeneratedXMLs/" +
                    resource[0].replace(" ", "") + ".xml", 'w')
     fileXML.write(tostring(root, pretty_print=True))
     fileXML.close()
+#    print(tostring(root, pretty_print=True))
