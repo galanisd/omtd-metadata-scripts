@@ -184,64 +184,14 @@ for j in range(2, 3):
     id_public.text = "true"
 
     ###########################
-    # contactInfo
-    contactInfo = SubElement(
-        lexicalConceptualResourceInfo, QName(ms, "contactInfo"))
-
-    # [m : (G or H or (I and J))]
-
-    # contactInfo - generic contact email
-    if resource[5] != '':
-        print "Working on generic contact email " + resource[5]
-        contact_genericEmail = SubElement(
-            contactInfo, QName(ms, "contactEmail"))
-        contact_genericEmail.text = resource[5].strip()
-
-    # contactInfo - landing page
-    if resource[6] != '':
-        print "Working on landing page " + resource[6]
-        contact_landingPage = SubElement(contactInfo, QName(ms, "landingPage"))
-        contact_landingPage.text = resource[6].strip()
-
-    # contactInfo - contact person name [+]
-    # contactInfo - contact person email [+]
-    if resource[7] != '' and resource[8] != '':
-        print "Working on contact person name " + resource[7]
-        print "Working on contact person email " + resource[8]
-        personName = resource[7].split(";")
-        personEmail = resource[8].split(";")
-        assert(len(personName) == len(personEmail))
-        contact_persons = SubElement(contactInfo, QName(ms, "contactPersons"))
-        for i in range(0, len(personName)):
-            contact_person = SubElement(
-                contact_persons, QName(ms, "contactPerson"))
-            # Contact Person Name
-            contact_personNames = SubElement(
-                contact_person, QName(ms, "names"))
-            contact_personName = SubElement(
-                contact_personNames, QName(ms, "name"))
-            contact_personName.text = personName[i].strip()
-            # Contact Person Email
-            contact_communication = SubElement(
-                contact_person, QName(ms, "communicationInfo"))
-            contact_communicationEmails = SubElement(
-                contact_communication, QName(ms, "emails"))
-            contact_communicationEmail = SubElement(
-                contact_communicationEmails, QName(ms, "email"))
-            contact_communicationEmail.text = personEmail[i].strip()
-
-    ###########################
     # versionInfo
     versionInfo = SubElement(
         lexicalConceptualResourceInfo, QName(ms, "versionInfo"))
 
-    # [m: (K or L)]
-
     # versionInfo - version
-    if resource[9] != '':
-        print "Working on version " + resource[9]
-        versionInfo_version = SubElement(versionInfo, QName(ms, "version"))
-        versionInfo_version.text = resource[9].strip()
+    print "Working on version " + resource[9]
+    versionInfo_version = SubElement(versionInfo, QName(ms, "version"))
+    versionInfo_version.text = resource[9].strip()
 
     # versionInfo - version date
     if resource[10] != '':
@@ -249,6 +199,53 @@ for j in range(2, 3):
         versionInfo_versionDate = SubElement(
             versionInfo, QName(ms, "versionDate"))
         versionInfo_versionDate.text = resource[10].strip()
+
+    # ###########################
+    # # contactInfo
+    # contactInfo = SubElement(
+    #     lexicalConceptualResourceInfo, QName(ms, "contactInfo"))
+
+    # # [m : (G or H or (I and J))]
+
+    # # contactInfo - generic contact email
+    # if resource[5] != '':
+    #     print "Working on generic contact email " + resource[5]
+    #     contact_genericEmail = SubElement(
+    #         contactInfo, QName(ms, "contactEmail"))
+    #     contact_genericEmail.text = resource[5].strip()
+
+    # # contactInfo - landing page
+    # if resource[6] != '':
+    #     print "Working on landing page " + resource[6]
+    #     contact_landingPage = SubElement(contactInfo, QName(ms, "landingPage"))
+    #     contact_landingPage.text = resource[6].strip()
+
+    # # contactInfo - contact person name [+]
+    # # contactInfo - contact person email [+]
+    # if resource[7] != '' and resource[8] != '':
+    #     print "Working on contact person name " + resource[7]
+    #     print "Working on contact person email " + resource[8]
+    #     personName = resource[7].split(";")
+    #     personEmail = resource[8].split(";")
+    #     assert(len(personName) == len(personEmail))
+    #     contact_persons = SubElement(contactInfo, QName(ms, "contactPersons"))
+    #     for i in range(0, len(personName)):
+    #         contact_person = SubElement(
+    #             contact_persons, QName(ms, "contactPerson"))
+    #         # Contact Person Name
+    #         contact_personNames = SubElement(
+    #             contact_person, QName(ms, "names"))
+    #         contact_personName = SubElement(
+    #             contact_personNames, QName(ms, "name"))
+    #         contact_personName.text = personName[i].strip()
+    #         # Contact Person Email
+    #         contact_communication = SubElement(
+    #             contact_person, QName(ms, "communicationInfo"))
+    #         contact_communicationEmails = SubElement(
+    #             contact_communication, QName(ms, "emails"))
+    #         contact_communicationEmail = SubElement(
+    #             contact_communicationEmails, QName(ms, "email"))
+    #         contact_communicationEmail.text = personEmail[i].strip()
 
     ##########################
     # distributionInfo
