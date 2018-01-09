@@ -2,14 +2,17 @@ import sys
 import os
 import csv
 import re
+import lxml.etree as etree
 from lxml.etree import Element, SubElement, QName, tostring
 
 # Declaring namespaces
 ms = 'http://www.meta-share.org/OMTD-SHARE_XMLSchema'
 xsi = 'http://www.w3.org/2001/XMLSchema-instance'
+# Set omtd-share version on 3.0.2
+omtd_share_version = "v302"
 
 # Read tsv file with creation metadata info
-with open("metadataCreationInfo.csv") as tsv:
+with open("./InputTSVs/metadataCreationInfo.csv") as tsv:
     reader = csv.reader(tsv, dialect="excel-tab")
     creation_data = list(reader)
     # print data[1]
@@ -20,15 +23,16 @@ with open("./InputTSVs/TestLanguageContentResources.csv") as tsv:
     data = list(reader)
 
 # for resource in data:
-for j in range(2, len(data)):
+# for j in range(2, len(data)):
+for j in range(2, 3):
     # Set working data
     resource = data[j]
-    creation_resource = creation_data[2]
+    creation_resource = creation_data[j]
     # Root element
     root = Element(QName(ms, "lcrMetadataRecord"),
                    nsmap={'ms': ms, 'xsi': xsi})
     root.attrib[QName(xsi, "schemaLocation")
-                ] = "http://www.meta-share.org/OMTD-SHARE_XMLSchema http://www.meta-share.org/OMTD-SHARE_XMLSchema/v200/OMTD-SHARE-LexicalConceptualResource.xsd"
+                ] = ms + " " + ms + "/" + omtd_share_version + "/OMTD-SHARE-LexicalConceptualResource.xsd"
 
     #########################################
     # metadataHeaderInfo
@@ -63,15 +67,20 @@ for j in range(2, len(data)):
     assert(len(creatorsName) == len(creatorsOrganization))
     assert(len(creatorsName) == len(creatorsDepartment))
 
+    # metadataCreator
     for i in range(0, len(creatorsName)):
         mdh_metadataCreator = SubElement(
             mdh_metadataCreators, QName(ms, "metadataCreator"))
-        # Name
-        mdh_creatorNames = SubElement(
-            mdh_metadataCreator, QName(ms, "names"))
+
+        name = creatorsName[i].split(" ")
+        # surname
+        mdh_creatorSurname = SubElement(
+            mdh_metadataCreator, QName(ms, "surname"))
+        mdh_creatorSurname.text = name[1].strip()
+
         mdh_creatorName = SubElement(
-            mdh_creatorNames, QName(ms, "name"))
-        mdh_creatorName.text = creatorsName[i].strip()
+            mdh_metadataCreator, QName(ms, "givenName"))
+        mdh_creatorName.text = name[0].strip()
 
         # Id
         mdh_creatorIdentifiers = SubElement(
@@ -81,11 +90,6 @@ for j in range(2, len(data)):
         mdh_creatorId.text = creatorsId[i].strip()
         mdh_creatorId.attrib[
             "personIdentifierSchemeName"] = creatorsIdSchema[i].strip()
-
-        # Sex
-        mdh_creatorSex = SubElement(
-            mdh_metadataCreator, QName(ms, "sex"))
-        mdh_creatorSex.text = creatorsSex[i].strip()
 
         # communicationInfo
         mdh_creatorCommunication = SubElement(
@@ -571,8 +575,9 @@ for j in range(2, len(data)):
         lrc_texiSizeSizeUnit.text = sizeUnits[i].strip()
 
     # Print xml
-    fileXML = open("GeneratedXMLs/" +
-                   resource[0].replace(" ", "") + ".xml", 'w')
-    fileXML.write(tostring(root, pretty_print=True))
-    fileXML.close()
+    # fileXML = open("GeneratedXMLs/" +
+    #               resource[0].replace(" ", "") + ".xml", 'w')
+    # fileXML.write(tostring(root, pretty_print=True))
+    # fileXML.close()
+    print etree.tostring(root, pretty_print=True)
 #    print(tostring(root, pretty_print=True))
