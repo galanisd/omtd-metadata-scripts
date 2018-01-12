@@ -490,12 +490,12 @@ for j in range(5, len(data)):  # len(data)):
             doc_publicationId.attrib[
                 "publicationIdentifierSchemeName"] = publIdSchema[i].strip()
 
-    # ##################################
-    # # lexicalConceptualResourceType
-    # assert(resource[34].strip() != "")
-    # resourceType = SubElement(
-    #     lexicalConceptualResourceInfo, QName(ms, "lexicalConceptualResourceType"))
-    # resourceType.text = resource[34].strip()
+    ##################################
+    # lexicalConceptualResourceType
+    assert(resource[38].strip() != "")
+    resourceType = SubElement(
+        lexicalConceptualResourceInfo, QName(ms, "lexicalConceptualResourceType"))
+    resourceType.text = resource[38].strip()
 
     # #################################
     # # lexicalConceptualResourceEncodingInfo
