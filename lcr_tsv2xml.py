@@ -456,7 +456,13 @@ for j in range(5, len(data)):  # len(data)):
             else:
                 print "Both resource[33] and resource[34] were not empty"
                 assert(0)
-    
+
+    ###########
+    # TODO Add rightsStatement rule based on info
+    rightsStatement = SubElement(
+        rightsInfo, QName(ms, "rightsStatement"))
+    rightsStatement.text = "openAccess"
+   
     
     # ###################################
     # # resource documentation info
