@@ -167,22 +167,22 @@ for j in range(4, 5):  # len(data)):
         identificationInfo, QName(ms, "public"))
     id_public.text = "true"
 
-    # ###########################
-    # # versionInfo
-    # versionInfo = SubElement(
-    #     lexicalConceptualResourceInfo, QName(ms, "versionInfo"))
+    ###########################
+    # versionInfo
+    versionInfo = SubElement(
+        lexicalConceptualResourceInfo, QName(ms, "versionInfo"))
 
-    # # versionInfo - version
-    # print "Working on version " + resource[9]
-    # versionInfo_version = SubElement(versionInfo, QName(ms, "version"))
-    # versionInfo_version.text = resource[9].strip()
+    # versionInfo - version
+    print "Working on version " + resource[6]
+    versionInfo_version = SubElement(versionInfo, QName(ms, "version"))
+    versionInfo_version.text = resource[6].strip()
 
-    # # versionInfo - version date
-    # if resource[10] != '':
-    #     print "Working on version date " + resource[10]
-    #     versionInfo_versionDate = SubElement(
-    #         versionInfo, QName(ms, "versionDate"))
-    #     versionInfo_versionDate.text = resource[10].strip()
+    # versionInfo - version date
+    if resource[7] != '':
+        print "Working on version date " + resource[7]
+        versionInfo_versionDate = SubElement(
+            versionInfo, QName(ms, "versionDate"))
+        versionInfo_versionDate.text = resource[7].strip()
 
     # ###########################
     # # contactInfo
