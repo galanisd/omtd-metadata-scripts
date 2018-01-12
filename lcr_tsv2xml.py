@@ -2,6 +2,8 @@ import sys
 import os
 import csv
 import re
+import datetime
+
 import lxml.etree as etree
 from lxml.etree import Element, SubElement, QName, tostring
 
@@ -11,12 +13,6 @@ xsi = 'http://www.w3.org/2001/XMLSchema-instance'
 # Set omtd-share version on 3.0.2
 omtd_share_version = "v302"
 
-# Read tsv file with creation metadata info
-with open("./InputTSVs/metadataCreationInfo.csv") as tsv:
-    reader = csv.reader(tsv, dialect="excel-tab")
-    creation_data = list(reader)
-    print creation_data
-
 # Read tsv file with rest metadata info
 with open("./InputTSVs/TestLanguageContentResources.csv") as tsv:
     reader = csv.reader(tsv, dialect="excel-tab")
@@ -24,10 +20,10 @@ with open("./InputTSVs/TestLanguageContentResources.csv") as tsv:
 
 # for resource in data:
 # for j in range(2, len(data)):
-for j in range(1, 2):  # len(data)):
+for j in range(4, 5):  # len(data)):
     # Set working data
     resource = data[j]
-    creation_resource = creation_data[j]
+
     # Root element
     root = Element(QName(ms, "lcrMetadataRecord"),
                    nsmap={'ms': ms, 'xsi': xsi})
@@ -40,56 +36,44 @@ for j in range(1, 2):  # len(data)):
         root, QName(ms, "metadataHeaderInfo"))
     mdh_metadataRecordId = SubElement(
         metadataHeaderInfo, QName(ms, "metadataRecordIdentifier"))
-    mdh_metadataRecordId.text = creation_resource[0].strip()
+    mdh_metadataRecordId.text = "omtd_id"
     mdh_metadataRecordId.attrib[
-        "metadataIdentifierSchemeName"] = creation_resource[1].strip()
+        "metadataIdentifierSchemeName"] = "OMTD"
     mdh_metadataCreationDate = SubElement(
         metadataHeaderInfo, QName(ms, "metadataCreationDate"))
-    mdh_metadataCreationDate.text = creation_resource[2].strip()
+    mdh_metadataCreationDate.text = str(datetime.datetime.now().date())
 
-    ###############################
+    
     # metadataCreators
     mdh_metadataCreators = SubElement(
         metadataHeaderInfo, QName(ms, "metadataCreators"))
-    creatorsName = creation_resource[3].split(";")
-    creatorsId = creation_resource[4].split(";")
-    creatorsIdSchema = creation_resource[5].split(";")
-    creatorsSex = creation_resource[6].split(";")
-    creatorsEmail = creation_resource[7].split(";")
-    creatorsPosition = creation_resource[8].split(";")
-    creatorsOrganization = creation_resource[9].split(";")
-    creatorsDepartment = creation_resource[10].split(";")
-    assert(len(creatorsName) == len(creatorsId))
-    assert(len(creatorsName) == len(creatorsIdSchema))
-    assert(len(creatorsName) == len(creatorsSex))
+    creatorsName = resource[43].split(";")  
+    creatorsEmail = resource[44].split(";")
     assert(len(creatorsName) == len(creatorsEmail))
-    assert(len(creatorsName) == len(creatorsPosition))
-    assert(len(creatorsName) == len(creatorsOrganization))
-    assert(len(creatorsName) == len(creatorsDepartment))
 
     # metadataCreator
     for i in range(0, len(creatorsName)):
         mdh_metadataCreator = SubElement(
             mdh_metadataCreators, QName(ms, "metadataCreator"))
 
-        name = creatorsName[i].split(" ")
+        name = creatorsName[i].split(",")
         # surname
         mdh_creatorSurname = SubElement(
             mdh_metadataCreator, QName(ms, "surname"))
-        mdh_creatorSurname.text = name[1].strip()
+        mdh_creatorSurname.text = name[0].strip()
 
         mdh_creatorName = SubElement(
             mdh_metadataCreator, QName(ms, "givenName"))
-        mdh_creatorName.text = name[0].strip()
+        mdh_creatorName.text = name[1].strip()
 
-        # Id
-        mdh_creatorIdentifiers = SubElement(
-            mdh_metadataCreator, QName(ms, "personIdentifiers"))
-        mdh_creatorId = SubElement(
-            mdh_creatorIdentifiers, QName(ms, "personIdentifier"))
-        mdh_creatorId.text = creatorsId[i].strip()
-        mdh_creatorId.attrib[
-            "personIdentifierSchemeName"] = creatorsIdSchema[i].strip()
+    #     # Id
+    #     mdh_creatorIdentifiers = SubElement(
+    #         mdh_metadataCreator, QName(ms, "personIdentifiers"))
+    #     mdh_creatorId = SubElement(
+    #         mdh_creatorIdentifiers, QName(ms, "personIdentifier"))
+    #     mdh_creatorId.text = creatorsId[i].strip()
+    #     mdh_creatorId.attrib[
+    #         "personIdentifierSchemeName"] = creatorsIdSchema[i].strip()
 
         # communicationInfo
         mdh_creatorCommunication = SubElement(
@@ -100,32 +84,32 @@ for j in range(1, 2):  # len(data)):
             mdh_creatorEmails, QName(ms, "email"))
         mdh_creatorEmail.text = creatorsEmail[i].strip()
 
-        # affliation info
-        mdh_creatorAffiliationsInfo = SubElement(
-            mdh_metadataCreator, QName(ms, "affiliations"))
-        mdh_creatorAffiliation = SubElement(
-            mdh_creatorAffiliationsInfo, QName(ms, "affiliation"))
-        mdh_creatorPosition = SubElement(
-            mdh_creatorAffiliation, QName(ms, "position"))
-        mdh_creatorPosition.text = creatorsPosition[i].strip()
-        mdh_creatorOrganization = SubElement(
-            mdh_creatorAffiliation, QName(ms, "affiliatedOrganization"))
+    #     # affliation info
+    #     mdh_creatorAffiliationsInfo = SubElement(
+    #         mdh_metadataCreator, QName(ms, "affiliations"))
+    #     mdh_creatorAffiliation = SubElement(
+    #         mdh_creatorAffiliationsInfo, QName(ms, "affiliation"))
+    #     mdh_creatorPosition = SubElement(
+    #         mdh_creatorAffiliation, QName(ms, "position"))
+    #     mdh_creatorPosition.text = creatorsPosition[i].strip()
+    #     mdh_creatorOrganization = SubElement(
+    #         mdh_creatorAffiliation, QName(ms, "affiliatedOrganization"))
 
-        # Organization
-        mdh_creatorOrganizationNames = SubElement(
-            mdh_creatorOrganization, QName(ms, "organizationNames"))
-        mdh_creatorOrganizationName = SubElement(
-            mdh_creatorOrganizationNames, QName(ms, "organizationName"))
-        mdh_creatorOrganizationName.text = creatorsOrganization[i].strip()
-        mdh_creatorOrganizationName.attrib["lang"] = "en"
+    #     # Organization
+    #     mdh_creatorOrganizationNames = SubElement(
+    #         mdh_creatorOrganization, QName(ms, "organizationNames"))
+    #     mdh_creatorOrganizationName = SubElement(
+    #         mdh_creatorOrganizationNames, QName(ms, "organizationName"))
+    #     mdh_creatorOrganizationName.text = creatorsOrganization[i].strip()
+    #     mdh_creatorOrganizationName.attrib["lang"] = "en"
 
-        # Department
-        mdh_creatorDepartmentNames = SubElement(
-            mdh_creatorOrganization, QName(ms, "departmentNames"))
-        mdh_creatorDepartmentName = SubElement(
-            mdh_creatorDepartmentNames, QName(ms, "departmentName"))
-        mdh_creatorDepartmentName.text = creatorsDepartment[i].strip()
-        mdh_creatorDepartmentName.attrib["lang"] = "en"
+    #     # Department
+    #     mdh_creatorDepartmentNames = SubElement(
+    #         mdh_creatorOrganization, QName(ms, "departmentNames"))
+    #     mdh_creatorDepartmentName = SubElement(
+    #         mdh_creatorDepartmentNames, QName(ms, "departmentName"))
+    #     mdh_creatorDepartmentName.text = creatorsDepartment[i].strip()
+    #     mdh_creatorDepartmentName.attrib["lang"] = "en"
 
     #########################################
     # lexicalConceptualResourceInfo
@@ -135,181 +119,180 @@ for j in range(1, 2):  # len(data)):
         lexicalConceptualResourceInfo, QName(ms, "resourceType"))
     resourceType.text = "lexicalConceptualResource"
 
-    #########################################
-    # identificationInfo
-    identificationInfo = SubElement(
-        lexicalConceptualResourceInfo, QName(ms, "identificationInfo"))
+    # #########################################
+    # # identificationInfo
+    # identificationInfo = SubElement(
+    #     lexicalConceptualResourceInfo, QName(ms, "identificationInfo"))
 
-    # identificationInfo - resourceName [m]
-    print "Working on resource " + resource[0]
-    id_resourceNames = SubElement(
-        identificationInfo, QName(ms, "resourceNames"))
-    id_name = SubElement(id_resourceNames, QName(ms, "resourceName"))
-    id_name.text = resource[0].strip()
-    id_name.attrib["lang"] = "en"
+    # # identificationInfo - resourceName [m]
+    # print "Working on resource " + resource[0]
+    # id_resourceNames = SubElement(
+    #     identificationInfo, QName(ms, "resourceNames"))
+    # id_name = SubElement(id_resourceNames, QName(ms, "resourceName"))
+    # id_name.text = resource[0].strip()
+    # id_name.attrib["lang"] = "en"
 
-    # identificationInfo - description [m]
-    print "Working on description " + resource[1]
-    id_descriptions = SubElement(identificationInfo, QName(ms, "descriptions"))
-    id_descr = SubElement(id_descriptions, QName(ms, "description"))
-    id_descr.text = resource[1].strip()
-    id_descr.attrib["lang"] = "en"
+    # # identificationInfo - description [m]
+    # print "Working on description " + resource[1]
+    # id_descriptions = SubElement(identificationInfo, QName(ms, "descriptions"))
+    # id_descr = SubElement(id_descriptions, QName(ms, "description"))
+    # id_descr.text = resource[1].strip()
+    # id_descr.attrib["lang"] = "en"
 
-    # identificationInfo  - resourceShortNames [o]
-    if resource[2] != '':
-        print "Working on resource short name " + resource[2]
-        id_resourceShortNames = SubElement(
-            identificationInfo, QName(ms, "resourceShortNames"))
-        id_shortName = SubElement(id_resourceShortNames,
-                                  QName(ms, "resourceShortName"))
-        id_shortName.text = resource[2].strip()
-        id_shortName.attrib["lang"] = "en"
+    # # identificationInfo  - resourceShortNames [o]
+    # if resource[2] != '':
+    #     print "Working on resource short name " + resource[2]
+    #     id_resourceShortNames = SubElement(
+    #         identificationInfo, QName(ms, "resourceShortNames"))
+    #     id_shortName = SubElement(id_resourceShortNames,
+    #                               QName(ms, "resourceShortName"))
+    #     id_shortName.text = resource[2].strip()
+    #     id_shortName.attrib["lang"] = "en"
 
-    # identificationInfo - resourceIdentifier [m+]
-    id_resourceIdentifiers = SubElement(
-        identificationInfo, QName(ms, "resourceIdentifiers"))
-    print "Working on resource id " + resource[3] + " with schemas " + resource[4]
-    resourceId = resource[3].split(";")
-    resourceIdSchema = resource[4].split(";")
-    assert(len(resourceId) == len(resourceIdSchema))
-    for i in range(0, len(resourceId)):
-        id_resourceId = SubElement(
-            id_resourceIdentifiers, QName(ms, "resourceIdentifier"))
-        id_resourceId.text = resourceId[i].strip()
-        id_resourceId.attrib[
-            "resourceIdentifierSchemeName"] = resourceIdSchema[i].strip()
+    # # identificationInfo - resourceIdentifier [m+]
+    # id_resourceIdentifiers = SubElement(
+    #     identificationInfo, QName(ms, "resourceIdentifiers"))
+    # print "Working on resource id " + resource[3] + " with schemas " + resource[4]
+    # resourceId = resource[3].split(";")
+    # resourceIdSchema = resource[4].split(";")
+    # assert(len(resourceId) == len(resourceIdSchema))
+    # for i in range(0, len(resourceId)):
+    #     id_resourceId = SubElement(
+    #         id_resourceIdentifiers, QName(ms, "resourceIdentifier"))
+    #     id_resourceId.text = resourceId[i].strip()
+    #     id_resourceId.attrib[
+    #         "resourceIdentifierSchemeName"] = resourceIdSchema[i].strip()
 
-    id_public = SubElement(
-        identificationInfo, QName(ms, "public"))
-    id_public.text = "true"
+    # id_public = SubElement(
+    #     identificationInfo, QName(ms, "public"))
+    # id_public.text = "true"
 
-    ###########################
-    # versionInfo
-    versionInfo = SubElement(
-        lexicalConceptualResourceInfo, QName(ms, "versionInfo"))
+    # ###########################
+    # # versionInfo
+    # versionInfo = SubElement(
+    #     lexicalConceptualResourceInfo, QName(ms, "versionInfo"))
 
-    # versionInfo - version
-    print "Working on version " + resource[9]
-    versionInfo_version = SubElement(versionInfo, QName(ms, "version"))
-    versionInfo_version.text = resource[9].strip()
+    # # versionInfo - version
+    # print "Working on version " + resource[9]
+    # versionInfo_version = SubElement(versionInfo, QName(ms, "version"))
+    # versionInfo_version.text = resource[9].strip()
 
-    # versionInfo - version date
-    if resource[10] != '':
-        print "Working on version date " + resource[10]
-        versionInfo_versionDate = SubElement(
-            versionInfo, QName(ms, "versionDate"))
-        versionInfo_versionDate.text = resource[10].strip()
+    # # versionInfo - version date
+    # if resource[10] != '':
+    #     print "Working on version date " + resource[10]
+    #     versionInfo_versionDate = SubElement(
+    #         versionInfo, QName(ms, "versionDate"))
+    #     versionInfo_versionDate.text = resource[10].strip()
 
-    ###########################
-    # contactInfo
-    contactInfo = SubElement(
-        lexicalConceptualResourceInfo, QName(ms, "contactInfo"))
+    # ###########################
+    # # contactInfo
+    # contactInfo = SubElement(
+    #     lexicalConceptualResourceInfo, QName(ms, "contactInfo"))
 
-    # [m : (G or H or (I and J))]
+    # # [m : (G or H or (I and J))]
 
-    # contactInfo - generic contact email
-    if resource[5] != '':
-        print "Working on generic contact email " + resource[5]
-        contact_point = SubElement(
-            contactInfo, QName(ms, "contactPoint"))
-        contact_point.text = resource[5].strip()
-        contact_type = SubElement(
-            contactInfo, QName(ms, "contactType"))
-        contact_type.text = "contactEmail"
+    # # contactInfo - generic contact email
+    # if resource[5] != '':
+    #     print "Working on generic contact email " + resource[5]
+    #     contact_point = SubElement(
+    #         contactInfo, QName(ms, "contactPoint"))
+    #     contact_point.text = resource[5].strip()
+    #     contact_type = SubElement(
+    #         contactInfo, QName(ms, "contactType"))
+    #     contact_type.text = "contactEmail"
 
-    # contactInfo - landing page
-    if resource[6] != '':
-        print "Working on landing page " + resource[6]
-        contact_point = SubElement(
-            contactInfo, QName(ms, "contactPoint"))
-        contact_point.text = resource[6].strip()
-        contact_type = SubElement(
-            contactInfo, QName(ms, "contactType"))
-        contact_type.text = "landingPage"
+    # # contactInfo - landing page
+    # if resource[6] != '':
+    #     print "Working on landing page " + resource[6]
+    #     contact_point = SubElement(
+    #         contactInfo, QName(ms, "contactPoint"))
+    #     contact_point.text = resource[6].strip()
+    #     contact_type = SubElement(
+    #         contactInfo, QName(ms, "contactType"))
+    #     contact_type.text = "landingPage"
 
-    # contactInfo - contact person name [+]
-    # contactInfo - contact person email [+]
-    if resource[7] != '' and resource[8] != '':
-        print "Working on contact person name " + resource[7]
-        print "Working on contact person email " + resource[8]
-        personName = resource[7].split(";")
-        personEmail = resource[8].split(";")
-        assert(len(personName) == len(personEmail))
-        contact_persons = SubElement(contactInfo, QName(ms, "contactPersons"))
-        for i in range(0, len(personName)):
-            contact_person = SubElement(
-                contact_persons, QName(ms, "contactPerson"))
-            names = personName[i].split(' ')
-            # Contact Person Surname
-            contact_personSurname = SubElement(
-                contact_person, QName(ms, "surname"))
-            contact_personSurname.text = names[0].strip()
-            # Contact Person given name
-            contact_personGivenName = SubElement(
-                contact_person, QName(ms, "givenName"))
-            contact_personGivenName.text = names[1].strip()
-            # Contact Person Email
-            contact_communication = SubElement(
-                contact_person, QName(ms, "communicationInfo"))
-            contact_communicationEmails = SubElement(
-                contact_communication, QName(ms, "emails"))
-            contact_communicationEmail = SubElement(
-                contact_communicationEmails, QName(ms, "email"))
-            contact_communicationEmail.text = personEmail[i].strip()
+    # # contactInfo - contact person name [+]
+    # # contactInfo - contact person email [+]
+    # if resource[7] != '' and resource[8] != '':
+    #     print "Working on contact person name " + resource[7]
+    #     print "Working on contact person email " + resource[8]
+    #     personName = resource[7].split(";")
+    #     personEmail = resource[8].split(";")
+    #     assert(len(personName) == len(personEmail))
+    #     contact_persons = SubElement(contactInfo, QName(ms, "contactPersons"))
+    #     for i in range(0, len(personName)):
+    #         contact_person = SubElement(
+    #             contact_persons, QName(ms, "contactPerson"))
+    #         names = personName[i].split(' ')
+    #         # Contact Person Surname
+    #         contact_personSurname = SubElement(
+    #             contact_person, QName(ms, "surname"))
+    #         contact_personSurname.text = names[0].strip()
+    #         # Contact Person given name
+    #         contact_personGivenName = SubElement(
+    #             contact_person, QName(ms, "givenName"))
+    #         contact_personGivenName.text = names[1].strip()
+    #         # Contact Person Email
+    #         contact_communication = SubElement(
+    #             contact_person, QName(ms, "communicationInfo"))
+    #         contact_communicationEmails = SubElement(
+    #             contact_communication, QName(ms, "emails"))
+    #         contact_communicationEmail = SubElement(
+    #             contact_communicationEmails, QName(ms, "email"))
+    #         contact_communicationEmail.text = personEmail[i].strip()
 
-    ##########################
-    # distributionInfo
-    distributionInfos = SubElement(
-        lexicalConceptualResourceInfo, QName(ms, "distributionInfos"))
+    # ##########################
+    # # distributionInfo
+    # distributionInfos = SubElement(
+    #     lexicalConceptualResourceInfo, QName(ms, "distributionInfos"))
 
-    #########################
-    # datasetDistributionInfo [m]
-    datasetDistributionInfo1 = SubElement(
-        distributionInfos, QName(ms, "datasetDistributionInfo"))
+    # #########################
+    # # datasetDistributionInfo [m]
+    # datasetDistributionInfo1 = SubElement(
+    #     distributionInfos, QName(ms, "datasetDistributionInfo"))
 
-    # datasetDistributionInfo [m] - distribution medium [m]
-    print "Working on distribution medium " + resource[11]
-    distr1_distributionMedium = SubElement(
-        datasetDistributionInfo1, QName(ms, "distributionMedium"))
-    distr1_distributionMedium.text = resource[11].strip()
+    # # datasetDistributionInfo [m] - distribution medium [m]
+    # print "Working on distribution medium " + resource[11]
+    # distr1_distributionMedium = SubElement(
+    #     datasetDistributionInfo1, QName(ms, "distributionMedium"))
+    # distr1_distributionMedium.text = resource[11].strip()
 
-    # datasetDistributionInfo [m] - distribution medium [o]
-    if resource[12].strip() != '':
-        print "Working on distribution location " + resource[12]
-        distr1_distributionLocation = SubElement(
-            datasetDistributionInfo1, QName(ms, "distributionLocation"))
-        distr1_distributionLocation.text = resource[12].strip()
+    # # datasetDistributionInfo [m] - distribution medium [o]
+    # if resource[12].strip() != '':
+    #     print "Working on distribution location " + resource[12]
+    #     distr1_distributionLocation = SubElement(
+    #         datasetDistributionInfo1, QName(ms, "distributionLocation"))
+    #     distr1_distributionLocation.text = resource[12].strip()
 
-    #  datasetDistributionInfo [m] - sizes [m]
-    lrc_textSizes = SubElement(
-        datasetDistributionInfo1, QName(ms, "sizes"))
-    sizes = resource[39].split(";")
-    sizeUnits = resource[40].split(";")
-    assert(len(sizes) == len(sizeUnits))
-    for i in range(0, len(sizes)):
-        lrc_textSizeInfo = SubElement(
-            lrc_textSizes, QName(ms, "sizeInfo"))
-        lrc_texiSizeSize = SubElement(
-            lrc_textSizeInfo, QName(ms, "size"))
-        lrc_texiSizeSize.text = sizes[i].strip()
-        lrc_texiSizeSizeUnit = SubElement(
-            lrc_textSizeInfo, QName(ms, "sizeUnit"))
-        lrc_texiSizeSizeUnit.text = sizeUnits[i].strip()
+    # #  datasetDistributionInfo [m] - sizes [m]
+    # lrc_textSizes = SubElement(
+    #     datasetDistributionInfo1, QName(ms, "sizes"))
+    # sizes = resource[39].split(";")
+    # sizeUnits = resource[40].split(";")
+    # assert(len(sizes) == len(sizeUnits))
+    # for i in range(0, len(sizes)):
+    #     lrc_textSizeInfo = SubElement(
+    #         lrc_textSizes, QName(ms, "sizeInfo"))
+    #     lrc_texiSizeSize = SubElement(
+    #         lrc_textSizeInfo, QName(ms, "size"))
+    #     lrc_texiSizeSize.text = sizes[i].strip()
+    #     lrc_texiSizeSizeUnit = SubElement(
+    #         lrc_textSizeInfo, QName(ms, "sizeUnit"))
+    #     lrc_texiSizeSizeUnit.text = sizeUnits[i].strip()
 
-    # datasetDistributionInfo [m] - text formats [m+]
-
-    print "Working on text formats " + resource[13]
-    distr1_textFormats = SubElement(
-        datasetDistributionInfo1, QName(ms, "textFormats"))
-    textFormat_list = resource[13].split(";")
-    for textFormat in textFormat_list:
-        distr1_textFormatInfo = SubElement(
-            distr1_textFormats, QName(ms, "textFormatInfo"))
-        distr1_dataFormatInfo = SubElement(
-            distr1_textFormatInfo, QName(ms, "dataFormatInfo"))
-        distr1_dataFormat = SubElement(
-            distr1_dataFormatInfo, QName(ms, "dataFormat"))
-        distr1_dataFormat.text = textFormat.strip()
+    # # datasetDistributionInfo [m] - text formats [m+]
+    # print "Working on text formats " + resource[13]
+    # distr1_textFormats = SubElement(
+    #     datasetDistributionInfo1, QName(ms, "textFormats"))
+    # textFormat_list = resource[13].split(";")
+    # for textFormat in textFormat_list:
+    #     distr1_textFormatInfo = SubElement(
+    #         distr1_textFormats, QName(ms, "textFormatInfo"))
+    #     distr1_dataFormatInfo = SubElement(
+    #         distr1_textFormatInfo, QName(ms, "dataFormatInfo"))
+    #     distr1_dataFormat = SubElement(
+    #         distr1_dataFormatInfo, QName(ms, "dataFormat"))
+    #     distr1_dataFormat.text = textFormat.strip()
 
     # # datasetDistributionInfo - licence info [m+]
     # distr1_rightsInfo = SubElement(
@@ -350,13 +333,13 @@ for j in range(1, 2):  # len(data)):
     #     datasetDistributionInfo2 = SubElement(
     #         distributionInfos, QName(ms, "datasetDistributionInfo"))
 
-    # # datasetDistributionInfo - distribution location [m]
-    #     distr2_distributionLocationExternal = SubElement(
-    #         datasetDistributionInfo2, QName(ms, "distributionLoc"))
-
     #     distr2_distributionMedium = SubElement(
     #         distr2_distributionLocationExternal, QName(ms, "distributionMedium"))
     #     distr2_distributionMedium.text = resource[18].strip()
+
+    #     # datasetDistributionInfo - distribution location [m]
+    #     distr2_distributionLocationExternal = SubElement(
+    #         datasetDistributionInfo2, QName(ms, "distributionLoc"))
 
     #     if resource[19].strip() != '':
     #         print "Working on distr location " + resource[19]
