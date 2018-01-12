@@ -119,53 +119,53 @@ for j in range(4, 5):  # len(data)):
         lexicalConceptualResourceInfo, QName(ms, "resourceType"))
     resourceType.text = "lexicalConceptualResource"
 
-    # #########################################
-    # # identificationInfo
-    # identificationInfo = SubElement(
-    #     lexicalConceptualResourceInfo, QName(ms, "identificationInfo"))
+    #########################################
+    # identificationInfo
+    identificationInfo = SubElement(
+        lexicalConceptualResourceInfo, QName(ms, "identificationInfo"))
 
-    # # identificationInfo - resourceName [m]
-    # print "Working on resource " + resource[0]
-    # id_resourceNames = SubElement(
-    #     identificationInfo, QName(ms, "resourceNames"))
-    # id_name = SubElement(id_resourceNames, QName(ms, "resourceName"))
-    # id_name.text = resource[0].strip()
-    # id_name.attrib["lang"] = "en"
+    # identificationInfo - resourceName [m]
+    print "Working on resource " + resource[1]
+    id_resourceNames = SubElement(
+        identificationInfo, QName(ms, "resourceNames"))
+    id_name = SubElement(id_resourceNames, QName(ms, "resourceName"))
+    id_name.text = resource[1].strip()
+    id_name.attrib["lang"] = "en"
 
-    # # identificationInfo - description [m]
-    # print "Working on description " + resource[1]
-    # id_descriptions = SubElement(identificationInfo, QName(ms, "descriptions"))
-    # id_descr = SubElement(id_descriptions, QName(ms, "description"))
-    # id_descr.text = resource[1].strip()
-    # id_descr.attrib["lang"] = "en"
+    # identificationInfo - description [m]
+    print "Working on description " + resource[1]
+    id_descriptions = SubElement(identificationInfo, QName(ms, "descriptions"))
+    id_descr = SubElement(id_descriptions, QName(ms, "description"))
+    id_descr.text = resource[2].strip()
+    id_descr.attrib["lang"] = "en"
 
-    # # identificationInfo  - resourceShortNames [o]
-    # if resource[2] != '':
-    #     print "Working on resource short name " + resource[2]
-    #     id_resourceShortNames = SubElement(
-    #         identificationInfo, QName(ms, "resourceShortNames"))
-    #     id_shortName = SubElement(id_resourceShortNames,
-    #                               QName(ms, "resourceShortName"))
-    #     id_shortName.text = resource[2].strip()
-    #     id_shortName.attrib["lang"] = "en"
+    # identificationInfo  - resourceShortNames [o]
+    if resource[3] != '':
+        print "Working on resource short name " + resource[3]
+        id_resourceShortNames = SubElement(
+            identificationInfo, QName(ms, "resourceShortNames"))
+        id_shortName = SubElement(id_resourceShortNames,
+                                  QName(ms, "resourceShortName"))
+        id_shortName.text = resource[3].strip()
+        id_shortName.attrib["lang"] = "en"
 
-    # # identificationInfo - resourceIdentifier [m+]
-    # id_resourceIdentifiers = SubElement(
-    #     identificationInfo, QName(ms, "resourceIdentifiers"))
-    # print "Working on resource id " + resource[3] + " with schemas " + resource[4]
-    # resourceId = resource[3].split(";")
-    # resourceIdSchema = resource[4].split(";")
-    # assert(len(resourceId) == len(resourceIdSchema))
-    # for i in range(0, len(resourceId)):
-    #     id_resourceId = SubElement(
-    #         id_resourceIdentifiers, QName(ms, "resourceIdentifier"))
-    #     id_resourceId.text = resourceId[i].strip()
-    #     id_resourceId.attrib[
-    #         "resourceIdentifierSchemeName"] = resourceIdSchema[i].strip()
+    # identificationInfo - resourceIdentifier [m+]
+    id_resourceIdentifiers = SubElement(
+        identificationInfo, QName(ms, "resourceIdentifiers"))
+    print "Working on resource ids: " + resource[4] + " with schemas: " + resource[5]
+    resourceId = resource[4].split(";")
+    resourceIdSchema = resource[5].split(";")
+    assert(len(resourceId) == len(resourceIdSchema))
+    for i in range(0, len(resourceId)):
+        id_resourceId = SubElement(
+            id_resourceIdentifiers, QName(ms, "resourceIdentifier"))
+        id_resourceId.text = resourceId[i].strip()
+        id_resourceId.attrib[
+            "resourceIdentifierSchemeName"] = resourceIdSchema[i].strip()
 
-    # id_public = SubElement(
-    #     identificationInfo, QName(ms, "public"))
-    # id_public.text = "true"
+    id_public = SubElement(
+        identificationInfo, QName(ms, "public"))
+    id_public.text = "true"
 
     # ###########################
     # # versionInfo
