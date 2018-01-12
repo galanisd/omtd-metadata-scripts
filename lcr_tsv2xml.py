@@ -464,27 +464,31 @@ for j in range(5, len(data)):  # len(data)):
     rightsStatement.text = "openAccess"
    
     
-    # ###################################
-    # # resource documentation info
-    # if resource[32].strip() != "":
-    #     assert(resource[33].strip() != "")
-    #     documentationInfo = SubElement(
-    #         lexicalConceptualResourceInfo, QName(ms, "resourceDocumentationInfo"))
-    #     doc_citations = SubElement(
-    #         documentationInfo, QName(ms, "citations"))
-    #     doc_mustBeCitedWith = SubElement(
-    #         doc_citations, QName(ms, "mustBeCitedWith"))
-    #     doc_publicationIdentifiers = SubElement(
-    #         doc_mustBeCitedWith, QName(ms, "publicationIdentifiers"))
-    #     publId = resource[32].split(";")
-    #     publIdSchema = resource[33].split(";")
-    #     assert(len(publId) == len(publIdSchema))
-    #     for i in range(0, len(publId)):
-    #         doc_publicationId = SubElement(
-    #             doc_publicationIdentifiers, QName(ms, "publicationIdentifier"))
-    #         #doc_publicationId.text = publId[i].strip()
-    #         doc_publicationId.attrib[
-    #             "publicationIdentifierSchemeName"] = publIdSchema[i].strip()
+    ###################################
+    # resource documentation info
+    if resource[35].strip() != "":        
+        resourceDocumentations = SubElement(
+            lexicalConceptualResourceInfo, QName(ms, "resourceDocumentations"))
+        resourceDocumentationInfo = SubElement(
+            lexicalConceptualResourceInfo, QName(ms, "resourceDocumentationInfo"))       
+        doc_description = SubElement(
+            resourceDocumentationInfo, QName(ms, "documentationDescription"))
+        doc_description.text = resource[35].strip()
+        doc_documentationType = SubElement(
+            resourceDocumentationInfo, QName(ms, "documentationType"))
+        doc_documentationType.text = "publicationForCitation"
+
+        doc_publicationIdentifiers = SubElement(
+            resourceDocumentationInfo, QName(ms, "publicationIdentifiers"))
+        publId = resource[36].split(";")
+        publIdSchema = resource[37].split(";")
+        assert(len(publId) == len(publIdSchema))
+        for i in range(0, len(publId)):
+            doc_publicationId = SubElement(
+                doc_publicationIdentifiers, QName(ms, "publicationIdentifier"))
+            doc_publicationId.text = publId[i].strip()
+            doc_publicationId.attrib[
+                "publicationIdentifierSchemeName"] = publIdSchema[i].strip()
 
     # ##################################
     # # lexicalConceptualResourceType
