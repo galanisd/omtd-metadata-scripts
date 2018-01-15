@@ -465,7 +465,7 @@ for j in range(5, len(data)):  # len(data)):
         resourceDocumentations = SubElement(
             lexicalConceptualResourceInfo, QName(ms, "resourceDocumentations"))
         resourceDocumentationInfo = SubElement(
-            lexicalConceptualResourceInfo, QName(ms, "resourceDocumentationInfo"))       
+            resourceDocumentations, QName(ms, "resourceDocumentationInfo"))       
         doc_description = SubElement(
             resourceDocumentationInfo, QName(ms, "documentationDescription"))
         doc_description.text = resource[35].strip()
