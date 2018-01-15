@@ -13,14 +13,19 @@ xsi = 'http://www.w3.org/2001/XMLSchema-instance'
 # Set omtd-share version on 3.0.2
 omtd_share_version = "v302"
 
+# Load open Access Licenses
+with open('OpenAccessLicense.txt') as f:
+    openAccessLicenses = f.read().splitlines()
+
+
 # Read tsv file with rest metadata info
 with open("./InputTSVs/TestLanguageContentResources.csv") as tsv:
     reader = csv.reader(tsv, dialect="excel-tab")
     data = list(reader)
 
+
 # for resource in data:
 # for j in range(2, len(data)):
-print len(data)
 for j in range(5, len(data)):  # len(data)):
     # Set working data
     resource = data[j]
@@ -402,6 +407,7 @@ for j in range(5, len(data)):  # len(data)):
         licenceInfos, QName(ms, "licenceInfo"))
     print "Working on licence " + resource[27]
     distr1_licence = SubElement(distr1_licenceInfo, QName(ms, "licence"))
+    license1 = resource[27].strip()
     distr1_licence.text = resource[27].strip()
     if distr1_licence.text == "nonStandardLicenceTerms":
         assert(resource[28].strip() != "")
@@ -426,6 +432,7 @@ for j in range(5, len(data)):  # len(data)):
 
     # rightsInfo [m] - licenceInfo 2 [o]
     if resource[31] != "":
+        license2 = resource[31].strip()
         distr2_licenceInfo = SubElement(
             licenceInfos, QName(ms, "licenceInfo"))
         print "Working on licence " + resource[31]
@@ -451,12 +458,25 @@ for j in range(5, len(data)):  # len(data)):
             else:
                 print "Both resource[33] and resource[34] were not empty"
                 assert(0)
+    else:
+        license2 = ""
 
     ###########
-    # TODO Add rightsStatement rule based on info
+    # Add rightsStatement rule based on info
     rightsStatement = SubElement(
         rightsInfo, QName(ms, "rightsStatement"))
-    rightsStatement.text = "openAccess"
+    rightsStatementText = ""
+    if license1 in openAccessLicenses:
+        if license2 != "" and license2 in openAccessLicenses:
+            rightsStatementText =  "openAccess"
+        elif license2 == "":
+            rightsStatementText =  "openAccess"
+        else:
+            rightsStatementText =  "restrictedAccess"
+            
+    else:
+        rightsStatementText =  "restrictedAccess"    
+    rightsStatement.text = rightsStatementText
    
     
     ###################################
