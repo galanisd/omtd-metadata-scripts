@@ -393,7 +393,7 @@ for j in range(5, len(data)):  # len(data)):
     ####################################
     # rightsInfo [m]
     rightsInfo = SubElement(
-        datasetDistributionInfo1, QName(ms, "rightsInfo"))
+        lexicalConceptualResourceInfo, QName(ms, "rightsInfo"))
     licenceInfos = SubElement(
         rightsInfo, QName(ms, "licenceInfos"))
     
