@@ -429,24 +429,24 @@ for j in range(5, len(data)):  # len(data)):
         distr2_licenceInfo = SubElement(
             licenceInfos, QName(ms, "licenceInfo"))
         print "Working on licence " + resource[31]
-        distr2_licence = SubElement(distr1_licenceInfo, QName(ms, "licence"))
+        distr2_licence = SubElement(distr2_licenceInfo, QName(ms, "licence"))
         distr2_licence.text = resource[31].strip()
         if distr2_licence.text == "nonStandardLicenceTerms":
             assert(resource[32].strip() != "")
             print "Working on nonStandardLicenceName " + resource[32]
             distr2_nonStandardLicenceName = SubElement(
-                distr1_licenceInfo, QName(ms, "nonStandardLicenceName"))
+                distr2_licenceInfo, QName(ms, "nonStandardLicenceName"))
             distr2_nonStandardLicenceName.text = resource[32].strip()        
             assert (resource[33].strip() != "" or resource[34].strip() != "")
             if resource[33].strip() != "" and resource[34].strip() == "":
                 print "Working on nonStandardLicenceTermsURL" + resource[33]
                 distr2_nonStandardLicenceTermsURL = SubElement(
-                    distr1_licenceInfo, QName(ms, "nonStandardLicenceTermsURL"))
+                    distr2_licenceInfo, QName(ms, "nonStandardLicenceTermsURL"))
                 distr2_nonStandardLicenceTermsURL.text = resource[33].strip()
             elif resource[34].strip() != "" and resource[33].strip() == "":
                 print "Working on nonStandardLicenceTermsText " + resource[34]
                 distr2_nonStandardLicenceTermsText = SubElement(
-                    distr1_licenceInfo, QName(ms, "nonStandaradLicenceTermsText"))
+                    distr2_licenceInfo, QName(ms, "nonStandaradLicenceTermsText"))
                 distr2_nonStandardLicenceTermsText.text = resource[34].strip()
             else:
                 print "Both resource[33] and resource[34] were not empty"
