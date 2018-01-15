@@ -143,12 +143,10 @@ for j in range(5, len(data)):  # len(data)):
     # identificationInfo  - resourceShortNames [o]
     if resource[3] != '':
         print "Working on resource short name " + resource[3]
-        id_resourceShortNames = SubElement(
-            identificationInfo, QName(ms, "resourceShortNames"))
-        id_shortName = SubElement(id_resourceShortNames,
-                                  QName(ms, "resourceShortName"))
-        id_shortName.text = resource[3].strip()
-        id_shortName.attrib["lang"] = "en"
+        id_resourceShortName = SubElement(
+            identificationInfo, QName(ms, "resourceShortName"))
+        id_resourceShortName.text = resource[3].strip()
+        id_resourceShortName.attrib["lang"] = "en"
 
     # identificationInfo - resourceIdentifier [m+]
     id_resourceIdentifiers = SubElement(
