@@ -409,7 +409,6 @@ for j in range(5, len(data)):  # len(data)):
         distr1_nonStandardLicenceName = SubElement(
         distr1_licenceInfo, QName(ms, "nonStandardLicenceName"))
         distr1_nonStandardLicenceName.text = resource[28].strip()
-        distr1_nonStandardLicenceName.attrib["lang"] = "en"
         assert (resource[29].strip() != "" or resource[30].strip() != "")
         if resource[29].strip() != "" and resource[30].strip() == "":
             print "Working on nonStandardLicenceTermsURL" + resource[29]
@@ -437,8 +436,7 @@ for j in range(5, len(data)):  # len(data)):
             print "Working on nonStandardLicenceName " + resource[32]
             distr2_nonStandardLicenceName = SubElement(
                 distr1_licenceInfo, QName(ms, "nonStandardLicenceName"))
-            distr2_nonStandardLicenceName.text = resource[32].strip()
-            distr2_nonStandardLicenceName.attrib["lang"] = "en"
+            distr2_nonStandardLicenceName.text = resource[32].strip()        
             assert (resource[33].strip() != "" or resource[34].strip() != "")
             if resource[33].strip() != "" and resource[34].strip() == "":
                 print "Working on nonStandardLicenceTermsURL" + resource[33]
