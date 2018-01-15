@@ -497,75 +497,64 @@ for j in range(5, len(data)):  # len(data)):
         lexicalConceptualResourceInfo, QName(ms, "lexicalConceptualResourceType"))
     resourceType.text = resource[38].strip()
 
-    # #################################
-    # # lexicalConceptualResourceEncodingInfo
-    # if resource[35].strip() != "":
-    #     resourceEncodingInfo = SubElement(
-    #         lexicalConceptualResourceInfo, QName(ms, "lexicalConceptualResourceEncodingInfo"))
-    #     contentTypes = resource[35].split(";")
-    #     for content in contentTypes:
-    #         encoding_contentTypes = SubElement(
-    #             resourceEncodingInfo, QName(ms, "contentTypes"))
-    #         encoding_contentTypes.text = content.strip()
+    #################################
+    # lexicalConceptualResourceEncodingInfo
+    if resource[39].strip() != "":
+        resourceEncodingInfo = SubElement(
+            lexicalConceptualResourceInfo, QName(ms, "lexicalConceptualResourceEncodingInfo"))
+        contentTypes = resource[39].split(";")
+        for content in contentTypes:
+            encoding_contentTypes = SubElement(
+                resourceEncodingInfo, QName(ms, "contentTypes"))
+            encoding_contentTypes.text = content.strip()
 
-    # ###########################################
-    # # lexicalConceptualResourceMediaType
-    # assert(resource[36].strip() != "")
-    # lcr_mediaType = SubElement(
-    #     lexicalConceptualResourceInfo, QName(ms, "lexicalConceptualResourceMediaType"))
-    # lrc_textInfo = SubElement(
-    #     lcr_mediaType, QName(ms, "lexicalConceptualResourceTextInfo"))
+    ###########################################
+    # lexicalConceptualResourceMediaType
+  
+    lrc_textInfo = SubElement(
+        lexicalConceptualResourceInfo, QName(ms, "lexicalConceptualResourceTextInfo"))
 
-    # # mediaType
-    # lrc_textMediaType = SubElement(
-    #     lrc_textInfo, QName(ms, "mediaType"))
-    # lrc_textMediaType.text = "text"
+    # mediaType
+    lrc_textMediaType = SubElement(
+        lrc_textInfo, QName(ms, "mediaType"))
+    lrc_textMediaType.text = "text"
 
-    # # lingualityInfo
-    # lrc_textLingualityInfo = SubElement(
-    #     lrc_textInfo, QName(ms, "lingualityInfo"))
-    # lrc_textLingualityType = SubElement(
-    #     lrc_textLingualityInfo, QName(ms, "lingualityType"))
-    # lrc_textLingualityType.text = resource[36].strip()
+    # lingualityInfo
+    assert(resource[40].strip() != "")
+    lrc_textLingualityInfo = SubElement(        
+        lrc_textInfo, QName(ms, "lingualityInfo"))
+    lrc_textLingualityType = SubElement(
+        lrc_textLingualityInfo, QName(ms, "lingualityType"))
+    lrc_textLingualityType.text = resource[40].strip()
 
-    # # language tag
-    # assert(resource[37].strip() != "")
-    # lrc_textLanguages = SubElement(
-    #     lrc_textInfo, QName(ms, "languages"))
-    # languageTags = resource[37].split(";")
-    # for langTag in languageTags:
-    #     lrc_textLanguageInfo = SubElement(
-    #         lrc_textLanguages, QName(ms, "languageInfo"))
-    #     lrc_textLanguage = SubElement(
-    #         lrc_textLanguageInfo, QName(ms, "language"))
-    #     lrc_textLanguageTag = SubElement(
-    #         lrc_textLanguage, QName(ms, "languageTag"))
-    #     lrc_textLanguageTag.text = langTag.strip()
-    #     lrc_textLanguageId = SubElement(
-    #         lrc_textLanguage, QName(ms, "languageId"))
-    #     lrc_textLanguageId.text = langTag.strip()
+    # language tag
+    assert(resource[41].strip() != "")
+    lrc_textLanguages = SubElement(
+        lrc_textInfo, QName(ms, "languages"))
+    languages = resource[41].split(";")
+    for lang in languages:
+        lrc_textLanguageInfo = SubElement(
+            lrc_textLanguages, QName(ms, "languageInfo"))
+        lrc_textLanguage = SubElement(
+            lrc_textLanguageInfo, QName(ms, "language"))
+        lrc_textLanguage.text = lang.strip()
+       
 
-    # # meta-language tag
-    # assert(resource[38].strip() != "")
-    # lrc_textMetaLanguages = SubElement(
-    #     lrc_textInfo, QName(ms, "metalanguages"))
-    # metalanguageTags = resource[38].split(";")
-    # for metalangTag in metalanguageTags:
-    #     lrc_textMetaLanguageInfo = SubElement(
-    #         lrc_textMetaLanguages, QName(ms, "metalanguageInfo"))
-    #     lrc_textMetaLanguage = SubElement(
-    #         lrc_textMetaLanguageInfo, QName(ms, "language"))
-    #     lrc_textMetaLanguageTag = SubElement(
-    #         lrc_textMetaLanguage, QName(ms, "languageTag"))
-    #     lrc_textMetaLanguageTag.text = metalangTag.strip()
-    #     lrc_textMetaLanguageId = SubElement(
-    #         lrc_textMetaLanguage, QName(ms, "languageId"))
-    #     lrc_textMetaLanguageId.text = metalangTag.strip()
+    # meta-language tag
+    assert(resource[42].strip() != "")
+    lrc_textMetaLanguages = SubElement(
+        lrc_textInfo, QName(ms, "metalanguages"))
+    metalanguages = resource[42].split(";")
+    for metalang in metalanguages:
+        lrc_textMetaLanguageInfo = SubElement(
+            lrc_textMetaLanguages, QName(ms, "metalanguageInfo"))
+        lrc_textMetaLanguage = SubElement(
+            lrc_textMetaLanguageInfo, QName(ms, "language"))
+        lrc_textMetaLanguage.text = metalang.strip()
 
     # Print xml
-    # fileXML = open("GeneratedXMLs/" +
-    #               resource[0].replace(" ", "") + ".xml", 'w')
-    # fileXML.write(tostring(root, pretty_print=True))
-    # fileXML.close()
-    print etree.tostring(root, pretty_print=True)
-#    print(tostring(root, pretty_print=True))
+    fileXML = open("GeneratedXMLs/" +
+                   resource[1].replace(" ", "") + ".xml", 'w')
+    fileXML.write(tostring(root, pretty_print=True))
+    fileXML.close()
+#    print etree.tostring(root, pretty_print=True)
