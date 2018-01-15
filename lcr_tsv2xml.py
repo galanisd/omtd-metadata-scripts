@@ -146,7 +146,6 @@ for j in range(5, len(data)):  # len(data)):
         id_resourceShortName = SubElement(
             identificationInfo, QName(ms, "resourceShortName"))
         id_resourceShortName.text = resource[3].strip()
-        id_resourceShortName.attrib["lang"] = "en"
 
     # identificationInfo - resourceIdentifier [m+]
     id_resourceIdentifiers = SubElement(
