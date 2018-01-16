@@ -1,0 +1,10 @@
+proprietary 
+underNegotiation
+nonStandardLicenceTerms
+AGPL-1.0
+BSD-4-Clause
+GFDL-1.3
+Princeton-WordNet
+NLM
+f-DPPL-3.0
+M-DPPL-3.0

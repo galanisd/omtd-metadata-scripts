@@ -13,10 +13,17 @@ xsi = 'http://www.w3.org/2001/XMLSchema-instance'
 # Set omtd-share version on 3.0.2
 omtd_share_version = "v302"
 
-# Load open Access Licenses
+# Load Open Access Licenses
 with open('OpenAccessLicense.txt') as f:
     openAccessLicenses = f.read().splitlines()
 
+# Load Restricted Access Licences
+with open('RestrictedAccessLicense.txt') as f:
+    restrictedAccessLicenses = f.read().splitlines()
+
+# Load Ask User Access Licences
+with open('AskUserAccessLicense.txt') as f:
+    askUserAccessLicenses = f.read().splitlines()
 
 # Read tsv file with rest metadata info
 with open("./InputTSVs/TestLanguageContentResources.csv") as tsv:
@@ -49,11 +56,10 @@ for j in range(5, len(data)):  # len(data)):
         metadataHeaderInfo, QName(ms, "metadataCreationDate"))
     mdh_metadataCreationDate.text = str(datetime.datetime.now().date())
 
-    
     # metadataCreators [m]
     mdh_metadataCreators = SubElement(
         metadataHeaderInfo, QName(ms, "metadataCreators"))
-    creatorsName = resource[43].split(";")  
+    creatorsName = resource[43].split(";")
     creatorsEmail = resource[44].split(";")
     assert(len(creatorsName) == len(creatorsEmail))
 
@@ -296,7 +302,6 @@ for j in range(5, len(data)):  # len(data)):
             distr1_dataFormatInfo, QName(ms, "dataFormat"))
         distr1_dataFormat.text = textFormat.strip()
 
-
     #########################
     # datasetDistributionInfo - 2 [o]
     if resource[17] != '':
@@ -401,7 +406,7 @@ for j in range(5, len(data)):  # len(data)):
         lexicalConceptualResourceInfo, QName(ms, "rightsInfo"))
     licenceInfos = SubElement(
         rightsInfo, QName(ms, "licenceInfos"))
-    
+
     # rightsInfo [m] - licenceInfo 1 [m]
     distr1_licenceInfo = SubElement(
         licenceInfos, QName(ms, "licenceInfo"))
@@ -413,7 +418,7 @@ for j in range(5, len(data)):  # len(data)):
         assert(resource[28].strip() != "")
         print "Working on nonStandardLicenceName " + resource[28]
         distr1_nonStandardLicenceName = SubElement(
-        distr1_licenceInfo, QName(ms, "nonStandardLicenceName"))
+            distr1_licenceInfo, QName(ms, "nonStandardLicenceName"))
         distr1_nonStandardLicenceName.text = resource[28].strip()
         assert (resource[29].strip() != "" or resource[30].strip() != "")
         if resource[29].strip() != "" and resource[30].strip() == "":
@@ -443,7 +448,7 @@ for j in range(5, len(data)):  # len(data)):
             print "Working on nonStandardLicenceName " + resource[32]
             distr2_nonStandardLicenceName = SubElement(
                 distr2_licenceInfo, QName(ms, "nonStandardLicenceName"))
-            distr2_nonStandardLicenceName.text = resource[32].strip()        
+            distr2_nonStandardLicenceName.text = resource[32].strip()
             assert (resource[33].strip() != "" or resource[34].strip() != "")
             if resource[33].strip() != "" and resource[34].strip() == "":
                 print "Working on nonStandardLicenceTermsURL" + resource[33]
@@ -462,30 +467,35 @@ for j in range(5, len(data)):  # len(data)):
         license2 = ""
 
     ###########
-    # Add rightsStatement rule based on info
+    # rightsStatement based on licences
     rightsStatement = SubElement(
         rightsInfo, QName(ms, "rightsStatement"))
     rightsStatementText = ""
     if license1 in openAccessLicenses:
         if license2 != "" and license2 in openAccessLicenses:
-            rightsStatementText =  "openAccess"
-        elif license2 == "":
-            rightsStatementText =  "openAccess"
+            rightsStatementText = "openAccess"
+        elif license2 != "" and license2 in askUserAccessLicenses:
+            rightsStatementText = "askUser"
+        elif license2 != "" and license2 in restrictedAccessLicenses:
+            rightsStatementText = "restrictedAccess"
         else:
-            rightsStatementText =  "restrictedAccess"
-            
+            rightsStatementText = "openAccess"
+    elif license1 in askUserAccessLicenses:
+        if license2 != "" and license2 in restrictedAccessLicenses:
+            rightsStatementText = "restrictedAccess"
+        else:
+            rightsStatementText = "askUser"
     else:
-        rightsStatementText =  "restrictedAccess"    
+        rightsStatementText = "restrictedAccess"
     rightsStatement.text = rightsStatementText
-   
-    
+
     ###################################
     # resource documentation info
-    if resource[35].strip() != "":        
+    if resource[35].strip() != "":
         resourceDocumentations = SubElement(
             lexicalConceptualResourceInfo, QName(ms, "resourceDocumentations"))
         resourceDocumentationInfo = SubElement(
-            resourceDocumentations, QName(ms, "resourceDocumentationInfo"))       
+            resourceDocumentations, QName(ms, "resourceDocumentationInfo"))
         doc_description = SubElement(
             resourceDocumentationInfo, QName(ms, "documentationDescription"))
         doc_description.text = resource[35].strip()
@@ -525,7 +535,6 @@ for j in range(5, len(data)):  # len(data)):
 
     ###########################################
     # lexicalConceptualResourceMediaType
-  
     lrc_textInfo = SubElement(
         lexicalConceptualResourceInfo, QName(ms, "lexicalConceptualResourceTextInfo"))
 
@@ -536,7 +545,7 @@ for j in range(5, len(data)):  # len(data)):
 
     # lingualityInfo
     assert(resource[40].strip() != "")
-    lrc_textLingualityInfo = SubElement(        
+    lrc_textLingualityInfo = SubElement(
         lrc_textInfo, QName(ms, "lingualityInfo"))
     lrc_textLingualityType = SubElement(
         lrc_textLingualityInfo, QName(ms, "lingualityType"))
@@ -553,7 +562,6 @@ for j in range(5, len(data)):  # len(data)):
         lrc_textLanguage = SubElement(
             lrc_textLanguageInfo, QName(ms, "language"))
         lrc_textLanguage.text = lang.strip()
-       
 
     # meta-language tag
     assert(resource[42].strip() != "")
